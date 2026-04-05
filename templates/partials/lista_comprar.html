@@ -1,0 +1,164 @@
+<h1>Lista de Compras</h1>
+
+<form id="form-item">
+	<input
+		type="text"
+		id="item"
+		name="item"
+		placeholder="Adicionar item..."
+		autocomplete="off"
+		required
+	/>
+	<button type="submit">Adicionar</button>
+</form>
+
+<div class="container">
+	<div class="card">
+		<h2>🛒 Comprar</h2>
+		<ul id="lista-comprar">
+			{% for item in itens %}
+			<li class="item">
+				<label>
+					<input
+						type="checkbox"
+						hx-get="/check/{{ loop.index0 }}"
+						hx-target="body"
+						hx-swap="innerHTML"
+					/>
+					<span>{{ item }}</span>
+				</label>
+			</li>
+			{% else %}
+			<li class="empty">Nenhum item na lista</li>
+			{% endfor %}
+		</ul>
+	</div>
+
+	<div class="card">
+		<h2>✅ Comprados</h2>
+		<ul>
+			{% for item in comprados %}
+			<li class="item done">
+				<label>
+					<input
+						type="checkbox"
+						checked
+						hx-get="/uncheck/{{ loop.index0 }}"
+						hx-target="body"
+						hx-swap="innerHTML"
+					/>
+					<span>{{ item }}</span>
+				</label>
+			</li>
+			{% else %}
+			<li class="empty">Nada comprado ainda</li>
+			{% endfor %}
+		</ul>
+		<button
+			hx-post="/limpar_comprados"
+			hx-target="body"
+			hx-confirm="Deseja apagar todos os itens comprados?"
+			class="btn-limpar-pequeno"
+		>
+			Limpar Lista
+		</button>
+	</div>
+</div>
+
+<div id="modal" class="modal" style="display: none">
+	<div class="modal-content">
+		<h3>Quantidade do item</h3>
+		<input
+			type="number"
+			id="quantidade"
+			min="1"
+			step="1"
+			value="1"
+			onkeypress="return event.charCode >= 48 && event.charCode <= 57;"
+		/>
+
+		<div class="modal-buttons">
+			<button type="button" onclick="confirmar()">Confirmar</button>
+			<button type="button" onclick="fecharModal()">Cancelar</button>
+		</div>
+	</div>
+</div>
+
+<script>
+	if (typeof window.funcoesInicializadas === 'undefined') {
+		window.funcoesInicializadas = true;
+		window.itemTemp = '';
+
+		window.fecharModal = function () {
+			const modal = document.getElementById('modal');
+			const inputPrincipal = document.getElementById('item');
+			if (modal) modal.style.display = 'none';
+			if (inputPrincipal) {
+				inputPrincipal.value = '';
+				inputPrincipal.focus();
+			}
+		};
+
+		window.confirmar = function () {
+			const inputQtd = document.getElementById('quantidade');
+			if (!window.itemTemp || !inputQtd) return;
+
+			let qtd = parseInt(inputQtd.value, 10);
+
+			if (isNaN(qtd) || qtd <= 0) {
+				alert('A quantidade deve ser um número maior que zero!');
+				inputQtd.value = 1;
+				inputQtd.focus();
+				return;
+			}
+
+			htmx.ajax('POST', '/add', {
+				values: { item: window.itemTemp + ' (' + qtd + ')' },
+				target: 'body',
+				swap: 'innerHTML',
+			});
+
+			window.itemTemp = '';
+			window.fecharModal();
+		};
+
+		window.onkeydown = function (e) {
+			const modal = document.getElementById('modal');
+			if (modal && modal.style.display === 'flex') {
+				if (e.key === 'Enter') {
+					e.preventDefault();
+					window.confirmar();
+				}
+				if (e.key === 'Escape') {
+					window.fecharModal();
+				}
+			}
+		};
+	}
+
+	(function () {
+		const formItem = document.getElementById('form-item');
+		const inputPrincipal = document.getElementById('item');
+		const modal = document.getElementById('modal');
+		const inputQtd = document.getElementById('quantidade');
+
+		if (formItem) {
+			formItem.onsubmit = function (e) {
+				e.preventDefault();
+				window.itemTemp = inputPrincipal.value.trim();
+				if (window.itemTemp === '') return;
+
+				modal.style.display = 'flex';
+				setTimeout(() => {
+					inputQtd.value = '1';
+					inputQtd.focus();
+					inputQtd.select();
+				}, 50);
+			};
+		}
+	})();
+</script>
+
+<footer class="footer">
+	<p>© 2026 Lista de Compras • By 006amanda</p>
+</footer>

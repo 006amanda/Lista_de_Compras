@@ -3,13 +3,6 @@ app = Flask(__name__)
 itens = []
 comprados = []
 
-from flask import Flask, render_template, request, redirect, url_for
-
-app = Flask(__name__)
-
-itens = []
-comprados = []
-
 @app.route("/")
 def index():
     return render_template("index.html", itens=itens, comprados=comprados)
@@ -17,9 +10,14 @@ def index():
 @app.route('/add', methods=['POST'])
 def add():
     item = request.form.get('item')
-    itens.append(item)
+    if item:
+        itens.append(item)
+    return render_template('partials/lista_comprar.html', itens=itens, comprados=comprados)
 
-    return render_template('partials/lista_comprar.html', itens=itens)
+@app.route("/limpar_comprados", methods=["POST"])
+def limpar_comprados():
+    comprados.clear() 
+    return render_template('partials/lista_comprar.html', itens=itens, comprados=comprados)
 
 @app.route("/check/<int:id>")
 def check(id):
@@ -40,12 +38,10 @@ def delete():
     ids_itens = request.form.getlist("itens")
     ids_comprados = request.form.getlist("comprados")
 
-    # remove itens normais
     for i in sorted([int(x) for x in ids_itens], reverse=True):
         if 0 <= i < len(itens):
             itens.pop(i)
 
-    # remove itens comprados
     for i in sorted([int(x) for x in ids_comprados], reverse=True):
         if 0 <= i < len(comprados):
             comprados.pop(i)
@@ -54,3 +50,4 @@ def delete():
 
 if __name__ == "__main__":
     app.run(debug=True)
+    
