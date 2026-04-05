@@ -28,8 +28,6 @@ Os itens adicionados são exibidos em um card de "Comprar" e, ao serem marcados,
 ---
 
 ## ▶️ Como executar o projeto
-
-1. Clone o repositório:
 ```Vá no Git Bash e digite:
 cd desktop
 
