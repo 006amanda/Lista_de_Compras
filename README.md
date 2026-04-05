@@ -10,8 +10,9 @@ Os itens adicionados são exibidos em um card de "Comprar" e, ao serem marcados,
 ## ⚙️ Funcionalidades
 
 - Adicionar novos itens à lista de compras
+- Selecionar a quantidade de cada item
 - Visualizar itens pendentes
-- Marcar itens como comprados (checkbox)
+- Marcar e desmarcar itens
 - Movimentação automática entre listas
 - Interface simples e intuitiva
 
@@ -29,5 +30,19 @@ Os itens adicionados são exibidos em um card de "Comprar" e, ao serem marcados,
 ## ▶️ Como executar o projeto
 
 1. Clone o repositório:
-```bash
-git clone <seu-repositorio>
+```Vá no Git Bash e digite:
+cd desktop
+
+```Cole:
+git clone <link-do-repositorio>
+
+```Abra a pasta do projeto no VS Code ou em outro editor
+
+```Instale as dependências:
+pip install -r requirements.txt
+
+```Execute o projeto com:
+python app.py
+
+```Acesse no navegador:
+http://127.0.0.1:5000
