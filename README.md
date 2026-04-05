@@ -28,24 +28,24 @@ Os itens adicionados são exibidos em um card de "Comprar" e, ao serem marcados,
 ---
 
 ## ▶️ Como executar o projeto
-Siga o passo a passo abaixo:
+### Siga o passo a passo abaixo:
 
-```Abra o Git Bash no seu computador e digite:
+### Abra o Git Bash no seu computador e digite:
 cd desktop
 
-```Copie esse link para a sua área de transferência:
+### Copie esse link para a sua área de transferência:
 https://github.com/006amanda/Lista_de_Compras.git
 
-```Digite e cole no Git Bash:
+### Digite e cole no Git Bash:
 git clone <link-do-repositorio>
 
-```Abra a pasta do projeto no VS Code ou em outro editor
+### Abra a pasta do projeto no VS Code ou em outro editor
 
-```Instale as dependências:
+### Instale as dependências:
 pip install -r requirements.txt
 
-```Execute o projeto com:
+### Execute o projeto com:
 python app.py
 
-```Acesse no navegador:
+### Acesse no navegador:
 http://127.0.0.1:5000
