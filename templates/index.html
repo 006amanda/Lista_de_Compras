@@ -1,121 +1,154 @@
 <!doctype html>
 <html lang="pt-br">
-	<header>
+	<head>
 		<meta charset="UTF-8" />
 		<title>Lista de Compras</title>
 		<link
 			rel="stylesheet"
 			href="{{ url_for('static', filename='style.css') }}"
 		/>
-	</header>
+		<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+	</head>
+
 	<body>
 		<h1>Lista de Compras</h1>
+
 		<form id="form-item">
 			<input
 				type="text"
 				id="item"
 				name="item"
 				placeholder="Adicionar item..."
+				autocomplete="off"
 				required
 			/>
 			<button type="submit">Adicionar</button>
 		</form>
 
-        <form action="/delete" method="POST"></form>
+		<div class="container">
+			<div class="card">
+				<h2>🛒 Comprar</h2>
+				<ul id="lista-comprar">
+					{% for item in itens %}
+					<li class="item">
+						<label>
+							<input
+								type="checkbox"
+								hx-get="/check/{{ loop.index0 }}"
+								hx-target="body"
+								hx-swap="innerHTML"
+							/>
+							<span>{{ item }}</span>
+						</label>
+					</li>
+					{% else %}
+					<li class="empty">Nenhum item na lista</li>
+					{% endfor %}
+				</ul>
+			</div>
 
-            <div class="container">
-                <div class="card">
-                    <h2>🛒 Comprar</h2>
-                    <ul>
-                        {% for item in itens %}
-                        <li class="item">
-                            <form action="/check/{{ loop.index0 }}" method="get">
-                                <label>
-                                    <input type="checkbox" onChange="this.form.submit()" />
-                                    <span>{{ item }}</span>
-                                </label>
-                            </form>
-                        </li>
-                        {% else %}
-                        <li class="empty">Nenhum item na lista</li>
-                        {% endfor %}
-                    </ul>
-                </div>
+			<div class="card">
+				<h2>✅ Comprados</h2>
+				<ul>
+					{% for item in comprados %}
+					<li class="item done">
+						<label>
+							<input
+								type="checkbox"
+								checked
+								hx-get="/uncheck/{{ loop.index0 }}"
+								hx-target="body"
+								hx-swap="innerHTML"
+							/>
+							<span>{{ item }}</span>
+						</label>
+					</li>
+					{% else %}
+					<li class="empty">Nada comprado ainda</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
 
-                <div class="card">
-                    <h2>✅ Comprados</h2>
-                    <ul>
-                        {% for item in comprados %}
-                        <li class="item done">
-                            <form action="/uncheck/{{ loop.index0 }}" method="get">
-                                <label>
-                                    <input type="checkbox" checked onChange="this.form.submit()" />
-                                    <span>{{ item }}</span>
-                                </label>
-                            </form>
-                        </li>
-                        {% else %}
-                        <li class="empty">Nada comprado ainda</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-                <div class="delete-area">
-                    <button type="submit" class="delete-btn">Excluir itens</button>
-                </div>
-        </form>
-
-		<div id="modal" class="modal">
+		<!-- Modal -->
+		<div id="modal" class="modal" style="display: none">
 			<div class="modal-content">
 				<h3>Quantidade do item</h3>
-
 				<input type="number" id="quantidade" min="1" value="1" />
 
 				<div class="modal-buttons">
-					<button onclick="confirmar()">Confirmar</button>
-					<button onclick="fecharModal()">Cancelar</button>
+					<button type="button" onclick="confirmar()">Confirmar</button>
+					<button type="button" onclick="fecharModal()">Cancelar</button>
 				</div>
 			</div>
 		</div>
+
 		<script>
 			let itemTemp = '';
 
-			document
-				.getElementById('form-item')
-				.addEventListener('submit', function (e) {
-					e.preventDefault();
+			const formItem = document.getElementById('form-item');
+			const inputPrincipal = document.getElementById('item');
 
-					itemTemp = document.getElementById('item').value;
-					document.getElementById('modal').style.display = 'flex';
-				});
+			formItem.addEventListener('submit', function (e) {
+				e.preventDefault();
+
+				itemTemp = inputPrincipal.value.trim();
+				if (itemTemp === '') return;
+
+				// Exibe modal
+				const modal = document.getElementById('modal');
+				modal.style.display = 'flex';
+
+				// Limpa seleção do input principal
+				document.activeElement.blur();
+
+				// Define valor inicial do modal
+				const inputQtd = document.getElementById('quantidade');
+				inputQtd.value = '1';
+				setTimeout(() => {
+					inputQtd.focus();
+					inputQtd.select();
+				}, 50);
+			});
 
 			function fecharModal() {
 				document.getElementById('modal').style.display = 'none';
+				inputPrincipal.value = '';
+				inputPrincipal.focus();
 			}
 
 			function confirmar() {
 				const quantidade = document.getElementById('quantidade').value;
 
-				fetch('/add', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/x-www-form-urlencoded',
-					},
-					body: `item=${itemTemp} (${quantidade})`,
-				}).then(() => {
-					// 🔥 limpa o input
-					document.getElementById('item').value = '';
+				if (!itemTemp) return;
 
-					// 🔥 fecha o modal
-					fecharModal();
-
-					// 🔥 recarrega a página
-					window.location.reload();
+				htmx.ajax('POST', '/add', {
+					values: { item: `${itemTemp} (${quantidade})` },
+					target: '#lista-comprar',
+					swap: 'innerHTML',
 				});
+
+				itemTemp = '';
+				fecharModal();
 			}
+
+			// Teclas de atalho para modal
+			window.addEventListener('keydown', function (e) {
+				const modal = document.getElementById('modal');
+				if (modal.style.display === 'flex') {
+					if (e.key === 'Enter') {
+						e.preventDefault();
+						confirmar();
+					}
+					if (e.key === 'Escape') {
+						fecharModal();
+					}
+				}
+			});
 		</script>
+
 		<footer class="footer">
-			<p>© 2026 Lista de Compras • Desenvolvido por Amanda</p>
+			<p>© 2026 Lista de Compras • By 006amanda</p>
 		</footer>
 	</body>
 </html>

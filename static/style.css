@@ -1,53 +1,103 @@
 body {
-	font-family: Arial, sans-serif;
-	background: #f4f4f4;
-	display: flex;
-	flex-direction: column;
-	min-height: 100vh;
-	text-align: center;
+  /* Troquei por uma fonte mais moderna, mas com fallback para Arial */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  /* Um fundo com um degradê muito sutil para não ficar apenas "cinza chapado" */
+  background: linear-gradient(135deg, #fdfbfb 0%, rgba(255, 255, 138, 0.186));
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  text-align: center;
+  margin: 0; /* Tira as margens padrão do navegador */
+}
+
+h1 {
+  margin-top: 40px;
+  color: #2c3e50;
+  position: relative;
+  display: inline-block;
+}
+
+h1::after {
+  content: '';
+  position: absolute;
+  width: 50%;
+  height: 4px;
+  background-color: rgba(255, 251, 141, 0.9); /* O amarelo um pouco mais forte */
+  bottom: -5px;
+  left: 25%;
+  border-radius: 2px;
 }
 
 /* Form */
 form {
-	margin: 20px;
+  margin: 30px auto 25px auto;
+  display: flex;
+  justify-content: center;
+  gap: 12px; /* Espaço entre o input e o botão */
 }
 
 input[type='text'] {
-	padding: 10px;
-	width: 200px;
+  padding: 12px 15px;
+  width: 250px;
+  border: 1px solid #ccc;
+  border-radius: 8px; /* Bordas arredondadas */
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+/* Efeito ao clicar no input, combinando com o tema */
+input[type='text']:focus {
+  border-color: #e5e073; 
+  box-shadow: 0 0 8px rgba(255, 251, 141, 0.8);
 }
 
 button {
-	padding: 10px;
-	cursor: pointer;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #555; /* Texto um pouco mais escuro para dar contraste no amarelo */
+  background-color: rgba(255, 251, 141, 0.9);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+button:hover {
+  background-color: #f7f374; /* Um amarelo um pouquinho mais vivo ao passar o mouse */
+  transform: translateY(-2px); /* Efeito do botão subindo */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
 /* Container dos cards */
 .container {
-	display: flex;
-	justify-content: center;
-	gap: 40px;
-	margin-top: 30px;
-	flex: 1;
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 10px;
+  flex: 1;
 }
 
-/* Card */
 .card {
-	background: white;
-	padding: 20px;
-	width: 250px;
-	border-radius: 12px;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-	text-align: left; /* 🔥 ESSENCIAL */
+  background: white;
+  padding: 20px;
+  width: 250px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: left;
+  transition: transform 0.3s ease, background 0.3s ease; /* Adicionado para suavizar o hover */
 }
 
 .card:hover {
-	transform: matrix(cursor);
-	background: rgba(255, 251, 141, 0.673);
+  transform: translateY(-4px); /* Substitui o "matrix(cursor)" inválido */
+  background: rgba(255, 251, 141, 0.673);
 }
 
 .card h2 {
-	text-align: center;
+  text-align: center;
 }
 
 /* Lista */
@@ -133,24 +183,6 @@ input[type='checkbox'] {
 .modal-buttons button {
 	padding: 8px 12px;
 	cursor: pointer;
-}
-
-.delete-area {
-	margin-top: 20px;
-	text-align: center;
-}
-
-.delete-btn {
-	background: #ff4d4d;
-	color: white;
-	border: none;
-	padding: 10px 15px;
-	border-radius: 8px;
-	cursor: pointer;
-}
-
-.delete-btn:hover {
-	background: #e60000;
 }
 
 .footer {

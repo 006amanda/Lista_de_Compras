@@ -14,12 +14,12 @@ comprados = []
 def index():
     return render_template("index.html", itens=itens, comprados=comprados)
 
-@app.route("/add", methods=["POST"])
+@app.route('/add', methods=['POST'])
 def add():
-    nome = request.form.get("item")
-    if nome:
-        itens.append(nome)
-    return redirect(url_for("index"))
+    item = request.form.get('item')
+    itens.append(item)
+
+    return render_template('partials/lista_comprar.html', itens=itens)
 
 @app.route("/check/<int:id>")
 def check(id):
