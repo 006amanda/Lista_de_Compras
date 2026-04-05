@@ -37,7 +37,7 @@ cd desktop
 https://github.com/006amanda/Lista_de_Compras.git
 
 ### Digite e cole no Git Bash:
-git clone <link-do-repositorio>
+git clone link
 
 ### Abra a pasta do projeto no VS Code ou em outro editor
 
